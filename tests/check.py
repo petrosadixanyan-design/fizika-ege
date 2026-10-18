@@ -633,11 +633,22 @@ def net(b):
     ctx, pg = page(b, errors, **PHONE)
     pg.on("response", lambda r: bad.append(f"{r.status} {r.url}") if r.status >= 400 else None)
     pg.on("requestfailed", lambda r: bad.append(f"не загрузилось {r.url}"))
-    for h in ("#/", "#/temy", "#/t/kinematika", "#/f/kin-x-ravnousk", "#/kviz/kinematika", "#/povtor", "#/ya"):
+    raw_tex = []
+    for h in ("#/", "#/temy", "#/t/kinematika", "#/t/dinamika", "#/f/kin-x-ravnousk",
+              "#/f/din-guk", "#/kviz/kinematika", "#/povtor", "#/ya"):
         start(pg, h)
         pg.wait_for_timeout(1200)
+        # code.plain — запасной вид, когда формулу не нашли среди нарисованных.
+        # На экране его быть не должно: это значит, что вместо формулы показан сырой LaTeX.
+        got = pg.evaluate("() => [...document.querySelectorAll('code.plain')].map(e => e.textContent)")
+        for t in got:
+            raw_tex.append(h + ": " + t)
     pg.goto(URL + "spravochnik.html", wait_until="load")
     pg.wait_for_timeout(800)
+    raw_tex += ["справочник: " + t for t in
+                pg.evaluate("() => [...document.querySelectorAll('code.plain')].map(e => e.textContent)")]
+    check(not raw_tex, "нигде не показан сырой LaTeX вместо формулы"
+          + (": " + "; ".join(raw_tex[:4]) if raw_tex else ""))
     # шрифты KaTeX подгружаются только когда формула на экране — проверяем, что они нашлись
     fonts = pg.evaluate("""() => performance.getEntriesByType('resource')
         .filter(e => /KaTeX_.*\\.woff2$/.test(e.name)).map(e => e.name.split('/').pop())""")
