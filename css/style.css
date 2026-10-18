@@ -1,0 +1,532 @@
+/* «Формулы ЕГЭ · Физика» — оформление. Сначала телефон, потом широкий экран.
+   Порядок: 1 токены · 2 основа · 3 оболочка и нижняя панель · 4 кнопки
+   · 5 экран «Сегодня» · 6 темы · 7 карточка формулы · 8 повторение · 9 квиз
+   · 10 прогресс и настройки · 11 математика KaTeX · 12 печать · 13 меньше движения */
+
+/* ---------- 1. Токены ---------- */
+:root {
+  color-scheme: light dark;
+
+  /* светлая тема по умолчанию: учатся днём */
+  --bg: #fbfaf8;          /* фон страницы, тёплая бумага */
+  --surface: #ffffff;     /* карточки */
+  --surface-2: #f3f2ef;   /* вторичные плашки */
+  --line: #e3e1db;        /* тонкие границы */
+  --text: #15181e;        /* основной текст */
+  --muted: #5e6572;       /* подписи */
+  --accent: #4338ca;      /* главный цвет: большая кнопка, номера */
+  --accent-soft: #eceafb; /* фон под акцентом */
+  --on-accent: #ffffff;
+  --ok: #15803d;          /* «знаю», верный ответ */
+  --ok-soft: #e7f6ec;
+  --hard: #b45309;        /* «с трудом» */
+  --hard-soft: #fdf1e3;
+  --bad: #b3261e;         /* «не помню», неверный ответ */
+  --bad-soft: #fdecea;
+
+  /* отступы: только эти значения */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
+  /* скругления: вложенное = внешнее минус отступ */
+  --r-1: 6px; --r-2: 10px; --r-3: 14px; --r-4: 20px; --r-full: 999px;
+
+  --gutter: 16px;
+  --nav-h: 58px;          /* высота нижней панели без безопасной зоны */
+  --shadow-1: 0 1px 2px rgba(16, 20, 28, .06), 0 2px 8px rgba(16, 20, 28, .05);
+  --shadow-2: 0 2px 6px rgba(16, 20, 28, .08), 0 12px 28px rgba(16, 20, 28, .10);
+
+  --ease: cubic-bezier(.32, .72, 0, 1);      /* «физическое», для появления */
+  --ease-ui: cubic-bezier(.23, 1, .32, 1);   /* быстрое, для нажатий */
+
+  --f-text: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --f-ru-math: 'PT Serif', Georgia, 'Times New Roman', serif;  /* кириллица внутри формул */
+}
+
+/* тёмная тема: по системе, но её можно переключить вручную через data-theme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111317; --surface: #191c22; --surface-2: #21252d; --line: #2d323c;
+    --text: #e9ebf0; --muted: #a0a8b6;
+    --accent: #93a4ff; --accent-soft: #23283c; --on-accent: #141726;
+    --ok: #6cd38d; --ok-soft: #16281d;
+    --hard: #e9ab5e; --hard-soft: #2a2015;
+    --bad: #ff8a80; --bad-soft: #2c1a19;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, .4);
+    --shadow-2: 0 2px 8px rgba(0, 0, 0, .5), 0 16px 32px rgba(0, 0, 0, .4);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111317; --surface: #191c22; --surface-2: #21252d; --line: #2d323c;
+  --text: #e9ebf0; --muted: #a0a8b6;
+  --accent: #93a4ff; --accent-soft: #23283c; --on-accent: #141726;
+  --ok: #6cd38d; --ok-soft: #16281d;
+  --hard: #e9ab5e; --hard-soft: #2a2015;
+  --bad: #ff8a80; --bad-soft: #2c1a19;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, .5), 0 16px 32px rgba(0, 0, 0, .4);
+}
+
+/* ---------- 2. Основа ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 17px/1.55 var(--f-text);
+  /* на телефоне нельзя «тянуть» страницу вниз во время повторения */
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3 { margin: 0; font-weight: 650; line-height: 1.25; letter-spacing: -.01em; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.2rem; }
+h3 { font-size: 1.02rem; }
+p { margin: 0 0 var(--sp-3); }
+ul { margin: 0; padding-left: 1.15em; }
+li { margin-bottom: var(--sp-1); }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+small, .small { font-size: .86rem; }
+.muted { color: var(--muted); }
+.hide { display: none !important; }
+/* заголовок, который не виден глазами, но читается экранным диктором.
+   display:none тут нельзя: тогда ломается порядок заголовков h1 → h2 → h3 */
+.vh {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* фокус виден только с клавиатуры */
+:focus { outline: none; }
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-1);
+}
+
+.skip {
+  position: absolute; left: var(--sp-2); top: -100px; z-index: 50;
+  padding: var(--sp-2) var(--sp-4); border-radius: var(--r-2);
+  background: var(--accent); color: var(--on-accent); font-weight: 600;
+}
+.skip:focus { top: var(--sp-2); }
+
+/* без JavaScript: прячем всё, что без него не работает, и показываем пререндер */
+.no-js .needs-js { display: none !important; }
+.no-js .screen.nojs-show { display: block; }
+.no-js main.wrap { padding-bottom: var(--sp-6); }
+
+/* ползунки в настройках */
+input[type="range"] {
+  width: 100%; height: 44px; margin: 0;
+  background: none; -webkit-appearance: none; appearance: none;
+  touch-action: manipulation;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: var(--r-full); background: var(--surface-2);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 28px; height: 28px; margin-top: -11px; border: 0; border-radius: var(--r-full);
+  background: var(--accent); box-shadow: var(--shadow-1);
+}
+input[type="range"]::-moz-range-track { height: 6px; border-radius: var(--r-full); background: var(--surface-2); }
+input[type="range"]::-moz-range-thumb { width: 28px; height: 28px; border: 0; border-radius: var(--r-full); background: var(--accent); }
+
+/* если формула почему-то не нарисовалась — показываем исходник, а не пустоту */
+code.plain {
+  font: 500 .95em ui-monospace, monospace;
+  background: var(--surface-2); padding: 1px 5px; border-radius: var(--r-1);
+}
+
+/* ---------- 3. Оболочка и нижняя панель ---------- */
+.wrap { width: 100%; max-width: 760px; margin: 0 auto; padding: 0 var(--gutter); }
+
+.top {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top);
+}
+@supports (backdrop-filter: blur(8px)) {
+  /* на касании размытие заметно тормозит слабые телефоны — только для мыши */
+  @media (hover: hover) { .top { backdrop-filter: blur(10px); } }
+}
+.top-in { display: flex; align-items: center; gap: var(--sp-3); min-height: 48px; }
+.top .back {
+  flex: none; display: inline-flex; align-items: center; gap: 4px;
+  min-height: 40px; padding: 0 var(--sp-2) 0 0;
+  color: var(--accent); background: none; border: 0; font: inherit; font-weight: 600;
+  cursor: pointer;
+}
+/* длинное название не должно разгонять шапку на три строки: оно и так есть в заголовке экрана */
+.top h1 {
+  font-size: 1.07rem; font-weight: 650; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.top .spacer { flex: 1; }
+
+/* main.wrap, а не просто main: иначе отступ снизу перебивается правилом .wrap
+   и последний блок уезжает под нижнюю панель */
+main.wrap {
+  padding-top: var(--sp-5);
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + var(--sp-6));
+}
+.screen { display: none; }
+.screen.on { display: block; animation: pop .22s var(--ease); }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } }
+
+.nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav a {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; min-height: var(--nav-h);
+  color: var(--muted); text-decoration: none; font-size: .72rem; font-weight: 600;
+  touch-action: manipulation; -webkit-user-select: none; user-select: none;
+}
+.nav a svg { width: 23px; height: 23px; }
+.nav a[aria-current="page"] { color: var(--accent); }
+.nav a .dot {
+  position: absolute; transform: translate(14px, -11px);
+  min-width: 17px; height: 17px; padding: 0 4px; border-radius: var(--r-full);
+  background: var(--bad); color: #fff; font-size: .64rem; line-height: 17px;
+}
+
+/* ---------- 4. Кнопки ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  min-height: 48px; padding: var(--sp-3) var(--sp-5);
+  border: 1px solid var(--line); border-radius: var(--r-3);
+  background: var(--surface); color: var(--text);
+  font: 600 1rem/1.2 var(--f-text); text-align: center; text-decoration: none;
+  cursor: pointer; touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
+  transition: transform .12s var(--ease-ui), background .15s var(--ease-ui);
+}
+.btn:active { transform: scale(.975); }
+@media (hover: hover) { .btn:hover { background: var(--surface-2); } }
+.btn-wide { width: 100%; }
+.btn-main {
+  background: var(--accent); color: var(--on-accent); border-color: transparent;
+  min-height: 62px; border-radius: var(--r-4); box-shadow: var(--shadow-1);
+  font-size: 1.12rem; flex-direction: column; gap: 2px;
+}
+@media (hover: hover) { .btn-main:hover { background: color-mix(in srgb, var(--accent) 88%, #000); } }
+.btn-main .sub { font-size: .82rem; font-weight: 500; opacity: .85; }
+.btn-ghost { background: none; border-color: transparent; color: var(--accent); }
+.btn-sm { min-height: 38px; padding: var(--sp-2) var(--sp-3); font-size: .88rem; border-radius: var(--r-2); }
+/* кнопка в шапке маленькая на вид, но палец должен попадать: держим 44×44 */
+.top .btn-sm { min-height: 44px; min-width: 44px; padding: 0; font-size: 1.15rem; }
+.btn[disabled] { opacity: .5; pointer-events: none; }
+.row { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+
+/* ---------- 5. Экран «Сегодня» ---------- */
+.band {
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-3);
+  margin-bottom: var(--sp-4); color: var(--muted); font-size: .88rem;
+}
+.band b { color: var(--text); font-weight: 650; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-4);
+  padding: var(--sp-4); margin-bottom: var(--sp-3); box-shadow: var(--shadow-1);
+}
+.card > :last-child { margin-bottom: 0; }
+
+.today-main { margin-bottom: var(--sp-3); }
+.linkrow {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
+  width: 100%; min-height: 56px; padding: var(--sp-3) var(--sp-4);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3);
+  color: inherit; text-decoration: none; font: inherit; text-align: left;
+  cursor: pointer; margin-bottom: var(--sp-2); touch-action: manipulation;
+}
+.linkrow > span:first-child { flex: 1; min-width: 0; }
+.linkrow .t { display: block; font-weight: 600; }
+.linkrow .n { display: block; color: var(--muted); font-size: .88rem; }
+.linkrow::after { content: '→'; color: var(--muted); flex: none; }
+@media (hover: hover) { .linkrow:hover { background: var(--surface-2); } }
+
+.bar { height: 8px; border-radius: var(--r-full); background: var(--surface-2); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+.bar.ok i { background: var(--ok); }
+
+.streak { text-align: center; color: var(--muted); font-size: .88rem; margin-top: var(--sp-4); }
+
+/* ---------- 6. Темы ---------- */
+.sec-title {
+  display: flex; align-items: baseline; gap: var(--sp-2);
+  margin: var(--sp-5) 0 var(--sp-2); font-size: .8rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+.sec-title:first-child { margin-top: 0; }
+.tile {
+  display: block; width: 100%; padding: var(--sp-4);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3);
+  color: inherit; text-decoration: none; text-align: left; margin-bottom: var(--sp-2);
+  cursor: pointer; touch-action: manipulation;
+}
+@media (hover: hover) { .tile:hover { border-color: var(--accent); } }
+.tile .head { display: flex; align-items: baseline; gap: var(--sp-2); }
+.tile .code { flex: none; color: var(--muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
+.tile .name { font-weight: 650; }
+.tile .about { color: var(--muted); font-size: .9rem; margin: var(--sp-1) 0 var(--sp-3); }
+.tile .meta { display: flex; align-items: center; gap: var(--sp-3); font-size: .82rem; color: var(--muted); }
+.tile .meta .bar { flex: 1; }
+/* тема, которой ещё нет. Приглушаем фоном, а НЕ прозрачностью:
+   от opacity текст становится нечитаемым (это нашла проверка доступности) */
+.tile.soon { background: var(--surface-2); border-style: dashed; }
+.tile.soon .name, .tile.soon .code { color: var(--muted); }
+
+/* значки уровня и силы памяти */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 1px var(--sp-2); border-radius: var(--r-full);
+  background: var(--surface-2); color: var(--muted);
+  font-size: .72rem; font-weight: 700; letter-spacing: .02em;
+}
+.tag.bu { background: var(--accent-soft); color: var(--accent); }
+.tag.uu { background: var(--hard-soft); color: var(--hard); }
+.dots { letter-spacing: 1px; font-size: .78rem; color: var(--ok); flex: none; }
+.dots .off { color: var(--line); }
+
+/* список формул внутри темы */
+.flist { list-style: none; padding: 0; margin: 0; }
+.flist li { margin: 0 0 var(--sp-2); }
+.frow {
+  display: flex; align-items: center; gap: var(--sp-3); width: 100%;
+  padding: var(--sp-3) var(--sp-4); min-height: 64px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3);
+  color: inherit; text-decoration: none; text-align: left; cursor: pointer;
+  touch-action: manipulation;
+}
+.frow .f { flex: 1; min-width: 0; }
+.frow .ftitle { font-size: .88rem; color: var(--muted); margin-bottom: 2px; }
+@media (hover: hover) { .frow:hover { border-color: var(--accent); } }
+
+/* ---------- 7. Карточка формулы ---------- */
+.fhead { margin-bottom: var(--sp-4); }
+.fhead .crumb { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-2); }
+.fbig {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-4);
+  padding: var(--sp-5) var(--sp-3); margin-bottom: var(--sp-3); box-shadow: var(--shadow-1);
+}
+.fbig .short { margin: var(--sp-4) 0 0; text-align: center; color: var(--muted); font-size: .92rem; }
+
+/* разбор букв: нажал на букву — подсветилась и показалось пояснение */
+.vars { list-style: none; padding: 0; margin: 0; }
+.vars li { margin-bottom: var(--sp-2); }
+.vbtn {
+  display: flex; align-items: flex-start; gap: var(--sp-3); width: 100%;
+  padding: var(--sp-3); min-height: 52px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-2);
+  color: inherit; font: inherit; text-align: left; cursor: pointer; touch-action: manipulation;
+}
+.vbtn .sym { flex: none; min-width: 42px; text-align: center; }
+.vbtn .f { flex: 1; min-width: 0; }        /* чтобы единица прижалась к правому краю */
+.vbtn .nm { display: block; font-weight: 600; }
+.vbtn .un { color: var(--accent); font-weight: 600; font-size: .9rem; white-space: nowrap; }
+.vbtn .ab { display: none; color: var(--muted); font-size: .9rem; margin-top: var(--sp-1); }
+.vbtn[aria-expanded="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.vbtn[aria-expanded="true"] .ab { display: block; }
+/* подсветка той же буквы внутри большой формулы */
+.fbig .lit { background: var(--accent-soft); border-radius: 3px; box-shadow: 0 0 0 2px var(--accent-soft); }
+
+.block { margin-bottom: var(--sp-3); }
+.block > h3 { display: flex; align-items: center; gap: var(--sp-2); margin-bottom: var(--sp-2); }
+.block > h3 .ic { flex: none; font-size: 1.1em; }
+.lw { list-style: none; padding: 0; margin: 0; }
+.lw li { position: relative; padding-left: 1.5em; margin-bottom: var(--sp-2); }
+.lw li::before { position: absolute; left: 0; font-weight: 700; }
+.lw.works li::before { content: '✓'; color: var(--ok); }
+.lw.breaks li::before { content: '✕'; color: var(--bad); }
+
+.note { padding: var(--sp-3) var(--sp-4); border-radius: var(--r-2); border-left: 3px solid; }
+.note.memo { background: var(--accent-soft); border-color: var(--accent); }
+.note.mist { background: var(--bad-soft); border-color: var(--bad); }
+.note.sign { background: var(--hard-soft); border-color: var(--hard); }
+.note .lab { display: block; font-size: .76rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: var(--sp-1); }
+
+details.more {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3);
+  padding: 0 var(--sp-4); margin-bottom: var(--sp-2);
+}
+details.more > summary {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-3) 0; min-height: 48px; font-weight: 600; cursor: pointer;
+  list-style: none; touch-action: manipulation;
+}
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::after { content: '+'; margin-left: auto; color: var(--muted); font-size: 1.25rem; }
+details.more[open] > summary::after { content: '−'; }
+details.more .body { padding-bottom: var(--sp-4); }
+
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.chip {
+  display: inline-flex; align-items: center; min-height: 40px; padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-full);
+  color: inherit; text-decoration: none; font-size: .88rem; font-weight: 600;
+  touch-action: manipulation;
+}
+@media (hover: hover) { .chip:hover { border-color: var(--accent); color: var(--accent); } }
+
+/* мини-график */
+.plot { background: var(--surface-2); border-radius: var(--r-2); padding: var(--sp-3); }
+.plot svg { display: block; width: 100%; height: auto; max-width: 260px; margin: 0 auto; }
+.plot .ax { stroke: var(--muted); stroke-width: 1.5; }
+.plot .ln { stroke: var(--accent); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+.plot .lb { fill: var(--muted); font: 600 11px var(--f-text); }
+
+/* ---------- 8. Повторение (карточки) ---------- */
+.ses { min-height: calc(100dvh - var(--nav-h) - 120px); display: flex; flex-direction: column; }
+.ses .prog { display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+.ses .prog .bar { flex: 1; }
+.ses .prog .n { font-size: .84rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.fc {
+  flex: 1; display: flex; flex-direction: column; justify-content: center;
+  gap: var(--sp-4); padding: var(--sp-5) var(--sp-4); text-align: center;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-4);
+  box-shadow: var(--shadow-1); margin-bottom: var(--sp-3);
+  cursor: pointer; touch-action: manipulation;
+}
+.fc .ask { color: var(--muted); font-size: .88rem; }
+.fc .q { font-size: 1.22rem; font-weight: 650; }
+.fc .ans { animation: pop .2s var(--ease); }
+.fc .hint { color: var(--muted); font-size: .86rem; }
+.fc .vmini { list-style: none; padding: 0; margin: var(--sp-3) 0 0; font-size: .92rem; text-align: left; }
+.fc .vmini li { display: flex; gap: var(--sp-2); margin-bottom: var(--sp-1); }
+.fc .vmini .un { color: var(--accent); font-weight: 600; margin-left: auto; white-space: nowrap; }
+
+.grades { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-2); }
+.grades .btn { flex-direction: column; gap: 1px; min-height: 64px; font-size: .96rem; }
+.grades .btn .k { font-size: .72rem; font-weight: 500; color: var(--muted); }
+.grades .again { background: var(--bad-soft); border-color: transparent; color: var(--bad); }
+.grades .hard  { background: var(--hard-soft); border-color: transparent; color: var(--hard); }
+.grades .know  { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+
+.done { text-align: center; padding: var(--sp-6) var(--sp-4); }
+.done .big { font-size: 2.6rem; line-height: 1; margin-bottom: var(--sp-3); }
+
+/* ---------- 9. Квиз ---------- */
+.qz .q { font-size: 1.14rem; font-weight: 650; margin-bottom: var(--sp-4); }
+.opts { display: grid; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.opt {
+  display: flex; align-items: center; gap: var(--sp-3); width: 100%;
+  min-height: 56px; padding: var(--sp-3) var(--sp-4);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3);
+  color: inherit; font: inherit; text-align: left; cursor: pointer; touch-action: manipulation;
+}
+.opt .k {
+  flex: none; width: 26px; height: 26px; border-radius: var(--r-full);
+  background: var(--surface-2); color: var(--muted);
+  font-size: .8rem; font-weight: 700; display: grid; place-items: center;
+}
+.opt .tx { flex: 1; min-width: 0; }
+@media (hover: hover) { .opt:not([disabled]):hover { border-color: var(--accent); } }
+.opt.is-ok { background: var(--ok-soft); border-color: var(--ok); }
+.opt.is-bad { background: var(--bad-soft); border-color: var(--bad); }
+.opt.is-ok .k { background: var(--ok); color: #fff; }
+.opt.is-bad .k { background: var(--bad); color: #fff; }
+.opt[disabled] { cursor: default; }
+.why { animation: pop .2s var(--ease); }
+.qz .numfield {
+  display: flex; gap: var(--sp-2); align-items: center; margin-bottom: var(--sp-3);
+}
+/* 16px у ВСЕХ полей: при меньшем размере телефон приближает страницу, когда в поле тыкают */
+input, textarea, select { font-size: 16px; }
+input[type="text"], input[type="number"], input[type="date"], textarea, select {
+  width: 100%; min-height: 48px; padding: var(--sp-3);
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--line); border-radius: var(--r-2);
+  font: 400 16px/1.4 var(--f-text);
+}
+textarea { min-height: 110px; resize: vertical; font-family: ui-monospace, monospace; }
+
+/* ---------- 10. Прогресс и настройки ---------- */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); margin-bottom: var(--sp-3); }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3); padding: var(--sp-4); }
+.stat .v { font-size: 1.7rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat .l { color: var(--muted); font-size: .84rem; margin-top: 2px; }
+
+.field { margin-bottom: var(--sp-4); }
+.field > label { display: block; font-weight: 600; margin-bottom: var(--sp-2); }
+.field .hint { color: var(--muted); font-size: .86rem; margin-top: var(--sp-1); }
+.seg { display: flex; gap: 0; border: 1px solid var(--line); border-radius: var(--r-2); overflow: hidden; }
+.seg button {
+  flex: 1; min-height: 46px; border: 0; background: var(--surface); color: var(--text);
+  font: 600 .94rem var(--f-text); cursor: pointer; touch-action: manipulation;
+}
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+.spark { display: flex; align-items: flex-end; gap: 2px; height: 56px; }
+.spark i { flex: 1; background: var(--accent-soft); border-radius: 2px 2px 0 0; min-height: 2px; }
+.spark i.has { background: var(--accent); }
+
+/* плашка «сайт обновился» */
+.toast {
+  position: fixed; left: var(--gutter); right: var(--gutter);
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + var(--sp-3));
+  z-index: 40; display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4); border-radius: var(--r-3);
+  background: var(--text); color: var(--bg); box-shadow: var(--shadow-2);
+  font-size: .94rem; animation: pop .25s var(--ease);
+}
+.toast .btn { min-height: 38px; padding: 0 var(--sp-3); background: var(--bg); color: var(--text); border: 0; }
+
+/* ---------- 11. Математика KaTeX ---------- */
+/* В шрифтах KaTeX НЕТ кириллицы. Русские индексы (A_вых, F_тр) берут запасной шрифт —
+   поэтому дописываем его в конец списка, чтобы они выглядели как в учебнике. */
+.katex { font-family: KaTeX_Main, var(--f-ru-math); }
+/* длинная формула не должна рвать страницу: даём ей прокрутку внутри себя */
+.katex-display {
+  margin: 0; overflow-x: auto; overflow-y: hidden;
+  padding: 2px 0 6px; scrollbar-width: thin;
+}
+.fbig .katex-display { font-size: 1.28em; }
+.frow .katex, .fc .katex { font-size: 1.06em; }
+.opt .katex-display { margin: 0; text-align: left; font-size: 1.05em; }
+.vbtn .sym .katex { font-size: 1.1em; }
+.m { white-space: nowrap; }   /* строчная формула внутри текста не ломается пополам */
+
+/* ---------- 12. Печать: шпаргалка ---------- */
+@media print {
+  :root { --bg: #fff; --surface: #fff; --text: #000; --muted: #333; --line: #bbb; --accent: #000; }
+  .nav, .top, .skip, .noprint, details.more > summary::after { display: none !important; }
+  body { font-size: 11pt; }
+  main { padding: 0; }
+  .card, .fbig, details.more { box-shadow: none; border: 1px solid var(--line); break-inside: avoid; }
+  details.more { padding: 0; }
+  details.more[open] > summary { font-weight: 700; }
+  .katex-display { overflow: visible; }
+  h2 { break-after: avoid; }
+  a[href^="#"]::after { content: ''; }
+}
+
+/* ---------- 13. «Меньше движения» ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* ---------- широкий экран: просто просторнее ---------- */
+@media (min-width: 720px) {
+  :root { --gutter: 32px; }
+  body { font-size: 18px; }
+  .stats { grid-template-columns: repeat(4, 1fr); }
+  .nav { max-width: 760px; left: 50%; transform: translateX(-50%); border-radius: var(--r-4) var(--r-4) 0 0; border: 1px solid var(--line); border-bottom: 0; }
+}
