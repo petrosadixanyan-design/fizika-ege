@@ -124,9 +124,28 @@ review/          документы ФИПИ и скриншоты — НЕ пу
 
 ---
 
-## Публикация
+## Живой сайт
 
-Пока нигде не опубликовано. Когда скажешь «да» — заведём публичный репозиторий
-`fizika-ege` и выложим на GitHub Pages: адрес будет вида
-`https://petrosadixanyan-design.github.io/fizika-ege/`. Обновление — коммит и `git push`,
-Pages пересобирается примерно за минуту.
+**https://petrosadixanyan-design.github.io/fizika-ege/** — открывается с любого телефона,
+в том числе с мобильного интернета. Репозиторий:
+https://github.com/petrosadixanyan-design/fizika-ege
+
+Как обновить после правок:
+
+```powershell
+cd C:\Users\User\Desktop\claude\fizika_ege
+node tools/build.js                                   # пересобрать
+git add -A
+git commit -F review/commit-msg.txt                   # русский текст только через файл
+git push
+git subtree push --prefix site origin gh-pages        # выложить папку site/
+# через минуту проверить:
+& "C:\Users\User\Desktop\claude\y2k_bot\.venv\Scripts\python.exe" tests/live.py
+```
+
+Ветка `main` — весь проект (с генераторами и проверками), ветка `gh-pages` — только папка
+`site/`, то есть то, что видно в интернете.
+
+> Смотреть сайт с телефона по локальному адресу (`192.168.1.*`) на этом компьютере
+> не получится: домашняя сеть помечена «общедоступной», а для python стоят запрещающие
+> правила брандмауэра. Поэтому телефон — только через живой адрес.
