@@ -1,0 +1,12 @@
+Подготовка к публикации на GitHub Pages
+
+Добавлен site/.nojekyll — иначе GitHub прогоняет страницы через Jekyll
+и может выбросить файлы, которые начинаются с подчёркивания.
+
+Ветка переименована в main, как в остальных проектах.
+
+Сайт рассчитан на подпапку: все пути относительные, service worker
+регистрируется со scope './'. Поэтому адрес вида
+petrosadixanyan-design.github.io/fizika-ege работает без правок.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
