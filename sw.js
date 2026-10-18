@@ -4,7 +4,7 @@
 // иначе у человека навсегда остался бы старый index.html. Это главная ловушка
 // GitHub Pages, поэтому строки ниже помечены и правятся скриптом, а не руками.
 
-const V = 'fiz-91acafe5';                                  /* make-sw: version */
+const V = 'fiz-63aa037e';                                  /* make-sw: version */
 const SHELL = [                                          /* make-sw: shell */
   './',
   './index.html',

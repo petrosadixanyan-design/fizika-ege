@@ -17,12 +17,14 @@
   }
 
   // Крупная формула (отдельной строкой) и строчная (внутри текста).
+  // Если в «своём» наборе формулы нет, берём из соседнего: одна и та же буква бывает
+  // нарисована только как строчная, а показать её надо крупно (например, в вопросе квиза).
   function md(tex) {
-    var h = get.d(tex);
+    var h = get.d(tex) || get.i(tex);
     return h || '<code class="plain">' + esc(tex) + '</code>';
   }
   function mi(tex) {
-    var h = get.i(tex);
+    var h = get.i(tex) || get.d(tex);
     return h ? '<span class="m">' + h + '</span>' : '<code class="plain">' + esc(tex) + '</code>';
   }
 
