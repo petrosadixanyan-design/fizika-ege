@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru" class="no-js">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover — чтобы содержимое уходило под вырез камеры, а отступы дал env(safe-area-*) -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>document.documentElement.className = 'js';</script>
+<title>Формулы ЕГЭ · Физика</title>
+<meta name="description" content="Тренажёр формул ЕГЭ по физике: все формулы кодификатора ФИПИ 2026 с разбором каждой буквы, квизы по темам и карточки умного повторения. Работает без интернета.">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111317" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Формулы">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="vendor/katex-0.19.0.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Перейти к содержимому</a>
+
+<header class="top">
+  <div class="wrap top-in">
+    <button type="button" class="back needs-js hide" id="back">← Назад</button>
+    <h1 id="title">Формулы ЕГЭ · Физика</h1>
+    <span class="spacer"></span>
+    <a class="btn btn-sm btn-ghost needs-js" href="#/ya" aria-label="Настройки и прогресс">⚙</a>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+  <!-- ———————————— Сегодня ———————————— -->
+  <section class="screen needs-js" id="s-today" aria-labelledby="h-today">
+    <h2 id="h-today" class="vh">Сегодня</h2>
+    <div id="today-body"></div>
+  </section>
+
+  <!-- ———————————— Темы ———————————— -->
+  <section class="screen nojs-show" id="s-topics" aria-labelledby="h-topics">
+    <h2 id="h-topics" class="vh">Темы</h2>
+    <div id="topics-body">
+      <!-- prerender:topics -->
+<div class="card"><p>Это тренажёр формул ЕГЭ по физике. Карточки повторения и квизы работают с JavaScript, а весь справочник — <a href="spravochnik.html">на отдельной странице</a>, её можно распечатать как шпаргалку.</p></div><h3 class="sec-title">1. Механика</h3><a class="tile" href="spravochnik.html#t-kinematika"><span class="head"><span class="code">1.1</span><span class="name">Кинематика</span></span><span class="about">Как описать движение, не спрашивая почему оно такое.</span><span class="meta">21 формул и определений</span></a><a class="tile" href="spravochnik.html#t-dinamika"><span class="head"><span class="code">1.2</span><span class="name">Динамика</span></span><span class="about">Почему тела движутся именно так: силы и законы Ньютона.</span><span class="meta">12 формул и определений</span></a><a class="tile" href="spravochnik.html#t-statika"><span class="head"><span class="code">1.3</span><span class="name">Статика</span></span><span class="about">Когда тело не двигается: рычаг, давление, сила Архимеда.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-sohranenie"><span class="head"><span class="code">1.4</span><span class="name">Законы сохранения в механике</span></span><span class="about">Импульс и энергия: что не исчезает и чем это удобно.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-kolebaniya"><span class="head"><span class="code">1.5</span><span class="name">Механические колебания и волны</span></span><span class="about">Маятники, периоды, длина волны.</span><span class="meta">скоро добавим</span></a><h3 class="sec-title">2. Молекулярная физика. Термодинамика</h3><a class="tile" href="spravochnik.html#t-mkt"><span class="head"><span class="code">2.1</span><span class="name">Молекулярная физика</span></span><span class="about">Газ как куча молекул: давление, температура, уравнение состояния.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-termodinamika"><span class="head"><span class="code">2.2</span><span class="name">Термодинамика</span></span><span class="about">Тепло и работа: нагрев, плавление, первый закон, КПД.</span><span class="meta">скоро добавим</span></a><h3 class="sec-title">3. Электродинамика</h3><a class="tile" href="spravochnik.html#t-elektropole"><span class="head"><span class="code">3.1</span><span class="name">Электрическое поле</span></span><span class="about">Заряды, поле, потенциал, конденсатор.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-tok"><span class="head"><span class="code">3.2</span><span class="name">Законы постоянного тока</span></span><span class="about">Ток, сопротивление, закон Ома, мощность.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-magnitnoe"><span class="head"><span class="code">3.3</span><span class="name">Магнитное поле</span></span><span class="about">Сила Ампера, сила Лоренца, движение заряда по окружности.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-indukciya"><span class="head"><span class="code">3.4</span><span class="name">Электромагнитная индукция</span></span><span class="about">Магнитный поток, ЭДС индукции, правило Ленца, индуктивность.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-emkolebaniya"><span class="head"><span class="code">3.5</span><span class="name">Электромагнитные колебания и волны</span></span><span class="about">Колебательный контур, формула Томсона, свойства электромагнитных волн.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-optika"><span class="head"><span class="code">3.6</span><span class="name">Оптика</span></span><span class="about">Отражение, преломление, линзы, интерференция и дифракция.</span><span class="meta">скоро добавим</span></a><h3 class="sec-title">4. Квантовая физика</h3><a class="tile" href="spravochnik.html#t-dualizm"><span class="head"><span class="code">4.1</span><span class="name">Корпускулярно-волновой дуализм</span></span><span class="about">Фотон, фотоэффект, давление света.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-atom"><span class="head"><span class="code">4.2</span><span class="name">Физика атома</span></span><span class="about">Уровни энергии, излучение и поглощение света атомом.</span><span class="meta">скоро добавим</span></a><a class="tile" href="spravochnik.html#t-yadro"><span class="head"><span class="code">4.3</span><span class="name">Физика атомного ядра</span></span><span class="about">Состав ядра, энергия связи, радиоактивный распад, ядерные реакции.</span><span class="meta">скоро добавим</span></a>
+<!-- /prerender:topics -->
+    </div>
+  </section>
+
+  <!-- ———————————— Одна тема ———————————— -->
+  <section class="screen needs-js" id="s-topic"><div id="topic-body"></div></section>
+
+  <!-- ———————————— Одна формула ———————————— -->
+  <section class="screen needs-js" id="s-formula"><div id="formula-body"></div></section>
+
+  <!-- ———————————— Повторение ———————————— -->
+  <section class="screen needs-js" id="s-session"><div id="session-body"></div></section>
+
+  <!-- ———————————— Квиз ———————————— -->
+  <section class="screen needs-js" id="s-quiz"><div id="quiz-body"></div></section>
+
+  <!-- ———————————— Я: прогресс и настройки ———————————— -->
+  <section class="screen needs-js" id="s-me"><div id="me-body"></div></section>
+
+  <noscript>
+    <div class="card">
+      <h2>Нужен JavaScript</h2>
+      <p>Карточки повторения и квизы работают только с включённым JavaScript.
+         А <a href="spravochnik.html">весь справочник формул</a> открывается и без него —
+         его же можно распечатать как шпаргалку.</p>
+    </div>
+  </noscript>
+
+</main>
+
+<nav class="nav needs-js" aria-label="Главное меню">
+  <a href="#/" data-nav="today">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7"/><circle cx="19" cy="16" r="3"/></svg>
+    Сегодня<span class="dot hide" id="nav-dot">0</span>
+  </a>
+  <a href="#/temy" data-nav="topics">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M8 9h8M8 13h5"/></svg>
+    Формулы
+  </a>
+  <a href="#/kviz" data-nav="quiz">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.4v.3"/><circle cx="12" cy="16.6" r=".9" fill="currentColor" stroke="none"/></svg>
+    Квиз
+  </a>
+  <a href="#/ya" data-nav="me">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20v-1c0-3 3.6-4.5 8-4.5s8 1.5 8 4.5v1"/><circle cx="12" cy="8" r="4"/></svg>
+    Я
+  </a>
+</nav>
+
+<!-- данные: сразу только короткий список формул и темы, сами темы догружаются по надобности -->
+<script src="data/topics.js"></script>
+<script src="data/index.js"></script>
+<script src="js/srs.js"></script>
+<script src="js/store.js"></script>
+<script src="js/quizgen.js"></script>
+<script src="js/data.js"></script>
+<script src="js/render.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
